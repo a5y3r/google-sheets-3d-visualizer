@@ -53,6 +53,13 @@ body {
   min-height: 44px; /* reserve space so the card doesn't jump when the button loads */
 }
 
+.privacy-link {
+  display: inline-block;
+  margin-top: 24px;
+  font-size: 0.75rem;
+  color: #888888;
+}
+
 .login-error {
   margin: 16px 0 0 !important;
   color: #c62828 !important;
