@@ -67,12 +67,15 @@ export function helixLayout(count, { radius = 850, angleStep = 0.15, heightStep 
 }
 
 /**
- * 3D grid, 10 across × 4 down × 5 deep (Image C: "5 × 4 × 10").
- * Fills one 10×4 sheet at a time, front to back, centred on the origin.
+ * 3D grid, 5 across (x) × 4 down (y) × 10 deep (z) — the brief's "5 × 4 × 10".
+ * Fills one 5×4 sheet at a time, front to back, centred on the origin.
+ *
+ * Spacing is tuned so the nearest layer (z = +1350, 1650 from the camera at z = 3000)
+ * still fits on screen: ~1320 wide × ~910 tall.
  */
 export function gridLayout(
   count,
-  { columns = 10, rows = 4, layers = 5, spacingX = 250, spacingY = 300, spacingZ = 500 } = {},
+  { columns = 5, rows = 4, layers = 10, spacingX = 300, spacingY = 250, spacingZ = 300 } = {},
 ) {
   const perLayer = columns * rows;
 

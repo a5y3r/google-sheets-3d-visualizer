@@ -48,11 +48,11 @@ describe('helixLayout', () => {
 });
 
 describe('gridLayout', () => {
-  it('arranges 200 tiles as 10 across × 4 down × 5 deep', () => {
+  it('arranges 200 tiles as 5 across × 4 down × 10 deep', () => {
     const targets = gridLayout(COUNT);
-    expect(distinct(targets, (p) => p.x)).toBe(10);
+    expect(distinct(targets, (p) => p.x)).toBe(5);
     expect(distinct(targets, (p) => p.y)).toBe(4);
-    expect(distinct(targets, (p) => p.z)).toBe(5);
+    expect(distinct(targets, (p) => p.z)).toBe(10);
   });
 
   it('keeps every layer in front of the camera (z = 3000)', () => {

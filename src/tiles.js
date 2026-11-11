@@ -54,7 +54,7 @@ function createPhoto(person) {
 
 export function createTile(person) {
   const tile = el('div', `tile tile--${netWorthLevel(person.netWorth)}`);
-  tile.title = `${person.name} — Net worth ${currency.format(person.netWorth)}`;
+  tile.title = `${person.name} - Net worth ${currency.format(person.netWorth)}`;
 
   const header = el('div', 'tile-header');
   header.append(el('span', 'tile-country', person.country), el('span', 'tile-age', person.age));

@@ -15,7 +15,7 @@ An interactive 3D visualisation of people data stored in Google Sheets, built on
   - **Table**: 20 × 10
   - **Sphere**
   - **Helix**: a double helix (two strands, 180° apart)
-  - **Grid**: 10 across × 4 down × 5 deep (5 × 4 × 10)
+  - **Grid**: 5 × 4 × 10 (5 across, 4 down, 10 deep)
 - Mouse controls: drag to rotate, scroll to zoom, right-drag to pan
 
 ## Tech stack
@@ -72,9 +72,10 @@ pure functions with no DOM or network access, so they are unit-tested directly.
   API from this domain.
 - **Net worth boundaries.** The brief says "Red < $100K, Orange > $100K, Green > $200K", which doesn't cover
   exactly $100K or $200K. Chosen rule: `< 100,000` red, `100,000–200,000` (inclusive) orange, `> 200,000` green.
-- **Grid orientation.** Following Image C: 10 columns across, 4 rows down and 5 layers deep, centred on the
-  origin so every layer stays in front of the camera. (The original demo grid puts layers behind the camera
-  when there are 200 items.)
+- **Grid dimensions.** "5 × 4 × 10" is read as x × y × z: 5 columns across, 4 rows down and 10 layers deep.
+  The grid is centred on the origin, and the layer spacing is tuned so the nearest layer still fits on screen
+  and every layer stays in front of the camera. (The original demo grid puts layers behind the camera when
+  there are 200 items.)
 - **Double helix tuning.** Strands are rotated π apart, and the pitch is chosen so the gap between strands is
   larger than a tile's height. Otherwise the two strands visually merge into one dense coil.
 - **Safety.** Sheet values are inserted with `textContent`, never `innerHTML`, to prevent HTML injection.
