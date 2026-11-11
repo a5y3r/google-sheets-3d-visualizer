@@ -4,10 +4,30 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>kasatria-assessment</title>
+    <title>Google Sheets 3D Visualizer</title>
   </head>
   <body>
-    <div id="app"></div>
+    <!-- View 1: login (Image A) -->
+    <main id="login-view" class="login-view">
+      <section class="login-card">
+        <h1>Welcome Back</h1>
+        <p>Sign in with your Google account to explore the 3D data visualisation.</p>
+        <div id="google-button" class="google-button"></div>
+        <p id="login-error" class="login-error" role="alert" hidden></p>
+      </section>
+    </main>
+
+    <!-- View 2: the 3D app (filled in from Step 6) -->
+    <div id="app-view" class="app-view" hidden>
+      <header class="user-bar">
+        <img id="user-avatar" class="user-avatar" alt="" referrerpolicy="no-referrer" />
+        <span id="user-name" class="user-name"></span>
+        <button id="sign-out" class="sign-out" type="button">Sign out</button>
+      </header>
+      <p id="status" class="status" role="status" hidden></p>
+      <div id="container"></div>
+    </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
