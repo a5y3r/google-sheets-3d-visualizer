@@ -140,47 +140,105 @@ body {
   background-color: rgba(0, 255, 255, 0.75);
 }
 
-/* ---------- Tiles (Step 6 placeholder, demo style) ---------- */
+/* ---------- Person tiles (Image B) ---------- */
 .tile {
+  --tile-rgb: 0, 127, 127; /* fallback (demo teal) */
   width: 120px;
   height: 160px;
-  border: 1px solid rgba(127, 255, 255, 0.25);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid rgba(var(--tile-rgb), 0.8);
+  background: rgba(var(--tile-rgb), 0.18);
+  box-shadow: 0 0 12px rgba(var(--tile-rgb), 0.5);
   font-family: Helvetica, Arial, sans-serif;
   text-align: center;
+  color: #ffffff;
   cursor: default;
+  user-select: none;
 }
+
+/* Net worth colours (Image B legend). JS adds tile--low / --medium / --high.
+   Must come AFTER .tile: same specificity, so the later rule wins. */
+.tile--low    { --tile-rgb: 239, 48, 34;  } /* #EF3022 red    — < $100K     */
+.tile--medium { --tile-rgb: 247, 148, 29; } /* #F7941D orange — $100K–$200K */
+.tile--high   { --tile-rgb: 58, 159, 72;  } /* #3A9F48 green  — > $200K     */
 
 .tile:hover {
-  border-color: rgba(127, 255, 255, 0.75);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.75);
+  border-color: rgba(var(--tile-rgb), 1);
+  background: rgba(var(--tile-rgb), 0.32);
+  box-shadow: 0 0 18px rgba(var(--tile-rgb), 0.9);
 }
 
-.tile-number {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  font-size: 12px;
-  color: rgba(127, 255, 255, 0.75);
-}
-
-.tile-symbol {
-  position: absolute;
-  top: 40px;
-  left: 0;
-  right: 0;
-  font-size: 60px;
+.tile-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
   font-weight: bold;
-  color: rgba(255, 255, 255, 0.75);
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
+  color: rgba(255, 255, 255, 0.85);
 }
 
-.tile-details {
-  position: absolute;
-  bottom: 15px;
-  left: 0;
-  right: 0;
-  padding: 0 6px;
+.tile-photo {
+  width: 72px;
+  height: 72px;
+  margin-top: 6px;
+  object-fit: cover;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.tile-photo--fallback {
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.tile-name {
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 1.2;
+  /* long names: max 2 lines, then "…" */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tile-interest {
+  margin-top: 2px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ---------- Net worth legend (Image B, bottom-right) ---------- */
+.legend {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid rgba(127, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.6);
   font-size: 12px;
-  color: rgba(127, 255, 255, 0.75);
+  color: #ffffff;
+}
+
+.legend-bar {
+  width: 120px;
+  height: 10px;
+  background: linear-gradient(to right, #ef3022, #f7941d, #3a9f48);
+}
+
+@media (max-width: 640px) {
+  .legend {
+    bottom: 60px; /* sit above the layout buttons on small screens */
+  }
 }

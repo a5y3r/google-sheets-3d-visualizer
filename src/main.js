@@ -11,6 +11,7 @@ const appView = document.querySelector('#app-view');
 const loginError = document.querySelector('#login-error');
 const statusText = document.querySelector('#status');
 const menu = document.querySelector('#menu');
+const legend = document.querySelector('#legend');
 const container = document.querySelector('#container');
 
 let visualizer = null; // the current 3D scene, so we can dispose it on sign-out
@@ -43,6 +44,7 @@ async function startVisualizer() {
 
     setStatus(null);
     menu.hidden = false;
+    legend.hidden = false;
     visualizer.transformTo(layouts.table);
   } catch (error) {
     setStatus(error.message);
@@ -53,6 +55,7 @@ function stopVisualizer() {
   visualizer?.dispose();
   visualizer = null;
   menu.hidden = true;
+  legend.hidden = true;
 }
 
 function showLogin() {
