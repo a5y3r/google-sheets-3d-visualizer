@@ -1,14 +1,8 @@
-// Layout generators: given how many tiles there are, return one target Object3D
-// (position + rotation) per tile. Pure maths — no DOM, no animation.
-//
-// Spec: Table 20×10, Sphere, double Helix, Grid 5×4×10.
-
 import { Object3D, Vector3 } from 'three';
 
-const SPACING_X = 140; // tile width 120 + 20 gap
-const SPACING_Y = 180; // tile height 160 + 20 gap
+const SPACING_X = 140;
+const SPACING_Y = 180;
 
-/** Rows of `columns` tiles, centred on the origin. */
 export function tableLayout(count, columns = 20) {
   const rows = Math.ceil(count / columns);
   return Array.from({ length: count }, (_, i) => {
@@ -24,42 +18,36 @@ export function tableLayout(count, columns = 20) {
   });
 }
 
-/** Tiles spread evenly over a sphere, each facing outwards. */
 export function sphereLayout(count, radius = 800) {
   const lookAt = new Vector3();
   return Array.from({ length: count }, (_, i) => {
-    const phi = Math.acos(-1 + (2 * i) / count); // top → bottom
-    const theta = Math.sqrt(count * Math.PI) * phi; // spin around as we go down
+    const phi = Math.acos(-1 + (2 * i) / count);
+    const theta = Math.sqrt(count * Math.PI) * phi;
     const target = new Object3D();
     target.position.setFromSphericalCoords(radius, phi, theta);
-    lookAt.copy(target.position).multiplyScalar(2); // a point further out = face outwards
+    lookAt.copy(target.position).multiplyScalar(2);
     target.lookAt(lookAt);
     return target;
   });
 }
 
 /**
- * Double helix: two strands rotated π (180°) apart, like DNA.
- * Even tiles go on strand A, odd tiles on strand B; each pair shares a height.
- *
- * Visual tuning: strand B passes half a turn (half the pitch) below strand A.
- *   half-pitch = π × heightStep / angleStep ≈ 335  →  gap ≈ 175 (> 160 tile height)
- * so the eye sees two separate ribbons instead of one dense coil.
- * Tile spacing along a strand = angleStep × radius ≈ 128 (> 120 tile width).
+ * Two strands offset by PI. Even tiles go on one strand and odd tiles on the other,
+ * so each pair sits at the same height on opposite sides.
+ * The pitch is kept large enough that the strands don't visually merge.
  */
 export function helixLayout(count, { radius = 850, angleStep = 0.15, heightStep = 16 } = {}) {
-  const steps = Math.ceil(count / 2); // tiles per strand
+  const stepsPerStrand = Math.ceil(count / 2);
   const lookAt = new Vector3();
 
   return Array.from({ length: count }, (_, i) => {
-    const strand = i % 2; // 0 = A, 1 = B
-    const step = Math.floor(i / 2); // position along the strand
+    const strand = i % 2;
+    const step = Math.floor(i / 2);
     const theta = step * angleStep + strand * Math.PI + Math.PI;
-    const y = ((steps - 1) / 2 - step) * heightStep; // centred vertically
+    const y = ((stepsPerStrand - 1) / 2 - step) * heightStep;
 
     const target = new Object3D();
     target.position.setFromCylindricalCoords(radius, theta, y);
-    // Face outwards: look at a point further from the axis at the same height.
     lookAt.set(target.position.x * 2, target.position.y, target.position.z * 2);
     target.lookAt(lookAt);
     return target;
@@ -67,11 +55,8 @@ export function helixLayout(count, { radius = 850, angleStep = 0.15, heightStep 
 }
 
 /**
- * 3D grid, 5 across (x) × 4 down (y) × 10 deep (z) — the brief's "5 × 4 × 10".
- * Fills one 5×4 sheet at a time, front to back, centred on the origin.
- *
- * Spacing is tuned so the nearest layer (z = +1350, 1650 from the camera at z = 3000)
- * still fits on screen: ~1320 wide × ~910 tall.
+ * 5 x 4 x 10 grid (x, y, z), filled one layer at a time from front to back.
+ * Spacing keeps the nearest layer within the camera's view.
  */
 export function gridLayout(
   count,
@@ -88,7 +73,7 @@ export function gridLayout(
     target.position.set(
       (column - (columns - 1) / 2) * spacingX,
       ((rows - 1) / 2 - row) * spacingY,
-      ((layers - 1) / 2 - layer) * spacingZ, // layer 0 nearest the camera
+      ((layers - 1) / 2 - layer) * spacingZ,
     );
     return target;
   });

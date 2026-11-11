@@ -1,10 +1,9 @@
-# On every push to main: install → test → build → deploy to GitHub Pages.
 name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
-  workflow_dispatch: # allow manual runs from the Actions tab
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -32,8 +31,7 @@ jobs:
 
       - run: npm run build
         env:
-          # Set these under Settings → Secrets and variables → Actions → Variables.
-          # They are public (bundled into the JS), so Variables — not Secrets — fit.
+          # Repository variables: Settings > Secrets and variables > Actions
           VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
           VITE_GOOGLE_API_KEY: ${{ vars.VITE_GOOGLE_API_KEY }}
           VITE_SHEET_ID: ${{ vars.VITE_SHEET_ID }}

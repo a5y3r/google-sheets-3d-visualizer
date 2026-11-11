@@ -1,6 +1,4 @@
-// Single place that reads environment variables.
-// Vite replaces import.meta.env.VITE_* at build time, so these values
-// end up in the public bundle — only non-secret values belong here.
+// These values are bundled into the client, so only non-secret config belongs here.
 
 const env = import.meta.env;
 
@@ -11,7 +9,6 @@ export const config = Object.freeze({
   sheetRange: env.VITE_SHEET_RANGE ?? 'Data!A1:F201',
 });
 
-// Fail fast with a clear message instead of a confusing error later.
 const missing = Object.entries(config)
   .filter(([, value]) => !value)
   .map(([key]) => key);

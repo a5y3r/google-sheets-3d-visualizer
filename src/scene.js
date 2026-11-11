@@ -1,5 +1,4 @@
-// three.js scene: camera, CSS3D renderer, mouse controls and layout animation.
-// Based on https://threejs.org/examples/#css3d_periodictable
+// Adapted from https://threejs.org/examples/#css3d_periodictable
 
 import { PerspectiveCamera, Scene } from 'three';
 import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
@@ -8,17 +7,12 @@ import { Group as TweenGroup, Tween, Easing } from 'three/addons/libs/tween.modu
 
 const randomPosition = () => Math.random() * 4000 - 2000;
 
-/**
- * Create the 3D scene inside `container` with one CSS3DObject per element.
- * Returns a small API: transformTo(targets) to animate, dispose() to tear down.
- */
 export function createScene({ container, elements }) {
   const camera = new PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 10000);
   camera.position.z = 3000;
 
   const scene = new Scene();
 
-  // Wrap each HTML element in a CSS3DObject, starting at a random position.
   const objects = elements.map((element) => {
     const object = new CSS3DObject(element);
     object.position.set(randomPosition(), randomPosition(), randomPosition());
@@ -37,16 +31,14 @@ export function createScene({ container, elements }) {
   controls.maxDistance = 6000;
   controls.addEventListener('change', render);
 
-  // Our own tween group, so we don't depend on (or clash with) global state.
   const tweens = new TweenGroup();
 
-  /** Animate every tile to its matching target. */
   function transformTo(targets, duration = 2000) {
-    tweens.removeAll(); // cancel any half-finished transition
+    tweens.removeAll();
 
     objects.forEach((object, i) => {
       const target = targets[i];
-      const time = Math.random() * duration + duration; // staggered = organic motion
+      const time = Math.random() * duration + duration;
 
       new Tween(object.position, tweens)
         .to({ x: target.position.x, y: target.position.y, z: target.position.z }, time)
@@ -59,7 +51,7 @@ export function createScene({ container, elements }) {
         .start();
     });
 
-    // Re-render on every frame while tiles are moving (longest tween = 2 × duration).
+    // Keep rendering until the longest tween has finished.
     new Tween({}, tweens).to({}, duration * 2).onUpdate(render).start();
   }
 
@@ -81,7 +73,6 @@ export function createScene({ container, elements }) {
   window.addEventListener('resize', onResize);
   animate();
 
-  /** Stop everything and remove the scene from the page (e.g. on sign-out). */
   function dispose() {
     cancelAnimationFrame(frameId);
     window.removeEventListener('resize', onResize);

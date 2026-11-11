@@ -15,7 +15,7 @@ body {
   display: none !important;
 }
 
-/* ---------- Login view (Image A) ---------- */
+/* Login */
 .login-view {
   min-height: 100%;
   display: grid;
@@ -50,7 +50,7 @@ body {
 .google-button {
   display: flex;
   justify-content: center;
-  min-height: 44px; /* reserve space so the card doesn't jump when the button loads */
+  min-height: 44px;
 }
 
 .privacy-link {
@@ -65,7 +65,7 @@ body {
   color: #c62828 !important;
 }
 
-/* ---------- App view (3D scene comes in Step 6) ---------- */
+/* App */
 .app-view {
   height: 100%;
   background: #000000;
@@ -116,7 +116,7 @@ body {
   background: rgba(0, 255, 255, 0.15);
 }
 
-/* ---------- Layout menu (demo style) ---------- */
+/* Layout menu */
 .menu {
   position: fixed;
   bottom: 20px;
@@ -147,9 +147,9 @@ body {
   background-color: rgba(0, 255, 255, 0.75);
 }
 
-/* ---------- Person tiles (Image B) ---------- */
+/* Tiles */
 .tile {
-  --tile-rgb: 0, 127, 127; /* fallback (demo teal) */
+  --tile-rgb: 0, 127, 127;
   width: 120px;
   height: 160px;
   padding: 8px;
@@ -166,11 +166,10 @@ body {
   user-select: none;
 }
 
-/* Net worth colours (Image B legend). JS adds tile--low / --medium / --high.
-   Must come AFTER .tile: same specificity, so the later rule wins. */
-.tile--low    { --tile-rgb: 239, 48, 34;  } /* #EF3022 red    — < $100K     */
-.tile--medium { --tile-rgb: 247, 148, 29; } /* #F7941D orange — $100K–$200K */
-.tile--high   { --tile-rgb: 58, 159, 72;  } /* #3A9F48 green  — > $200K     */
+/* Net worth levels */
+.tile--low    { --tile-rgb: 239, 48, 34;  }
+.tile--medium { --tile-rgb: 247, 148, 29; }
+.tile--high   { --tile-rgb: 58, 159, 72;  }
 
 .tile:hover {
   border-color: rgba(var(--tile-rgb), 1);
@@ -209,7 +208,6 @@ body {
   font-size: 11px;
   font-weight: bold;
   line-height: 1.2;
-  /* long names: max 2 lines, then "…" */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -222,7 +220,7 @@ body {
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* ---------- Net worth legend (Image B, bottom-right) ---------- */
+/* Legend */
 .legend {
   position: fixed;
   right: 20px;
@@ -246,6 +244,6 @@ body {
 
 @media (max-width: 640px) {
   .legend {
-    bottom: 60px; /* sit above the layout buttons on small screens */
+    bottom: 60px;
   }
 }

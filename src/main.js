@@ -14,7 +14,7 @@ const menu = document.querySelector('#menu');
 const legend = document.querySelector('#legend');
 const container = document.querySelector('#container');
 
-let visualizer = null; // the current 3D scene, so we can dispose it on sign-out
+let visualizer = null;
 let layouts = {};
 
 function setStatus(message) {
@@ -23,7 +23,7 @@ function setStatus(message) {
 }
 
 async function startVisualizer() {
-  setStatus('Loading data from Google Sheets…');
+  setStatus('Loading data from Google Sheets...');
   try {
     const people = await loadPeople({
       sheetId: config.sheetId,
@@ -77,7 +77,6 @@ function showError(message) {
   loginError.hidden = false;
 }
 
-// Layout buttons: <button data-layout="sphere"> → layouts.sphere
 menu.addEventListener('click', (event) => {
   const name = event.target.closest('button[data-layout]')?.dataset.layout;
   if (name && visualizer) visualizer.transformTo(layouts[name]);
@@ -89,7 +88,6 @@ document.querySelector('#sign-out').addEventListener('click', () => {
 });
 
 async function start() {
-  // Already signed in during this tab session? Skip the login screen.
   const existingUser = getCurrentUser();
   if (existingUser) showApp(existingUser);
 

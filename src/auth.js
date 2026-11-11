@@ -1,10 +1,6 @@
-// Google Sign-In using Google Identity Services (GIS).
-// Docs: https://developers.google.com/identity/gsi/web
-
 const GSI_SCRIPT_URL = 'https://accounts.google.com/gsi/client';
 const STORAGE_KEY = 'gs3d.user';
 
-/** Load the GIS library once, by adding its <script> tag to the page. */
 function loadGoogleScript() {
   return new Promise((resolve, reject) => {
     if (window.google?.accounts?.id) return resolve();
@@ -18,31 +14,25 @@ function loadGoogleScript() {
   });
 }
 
-/**
- * Read the payload (middle part) of a JWT.
- * A JWT is "header.payload.signature", each part base64url-encoded.
- * NOTE: this only decodes — it does not verify the signature.
- */
+// Decodes the payload only. The signature is not verified since there is no backend.
 function decodeJwtPayload(token) {
   const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
   const bytes = Uint8Array.from(atob(base64), (char) => char.charCodeAt(0));
-  return JSON.parse(new TextDecoder().decode(bytes)); // TextDecoder handles non-ASCII names
+  return JSON.parse(new TextDecoder().decode(bytes));
 }
 
-/** Return the signed-in user saved in this tab, or null if none / expired. */
 export function getCurrentUser() {
   try {
     const user = JSON.parse(sessionStorage.getItem(STORAGE_KEY));
     if (user && user.expiresAt > Date.now()) return user;
   } catch {
-    // corrupted or unavailable storage → treat as signed out
+    // Ignore malformed session data.
   }
   sessionStorage.removeItem(STORAGE_KEY);
   return null;
 }
 
 /**
- * Initialise GIS and render the official Google button.
  * @param {object} options
  * @param {string} options.clientId - OAuth Client ID from Google Cloud
  * @param {HTMLElement} options.buttonContainer - where to draw the button
@@ -56,7 +46,6 @@ export async function initAuth({ clientId, buttonContainer, onSignIn }) {
     callback: ({ credential }) => {
       const payload = decodeJwtPayload(credential);
 
-      // Sanity checks: token is from Google and meant for *our* app.
       const validIssuer = ['accounts.google.com', 'https://accounts.google.com'].includes(payload.iss);
       if (!validIssuer || payload.aud !== clientId) {
         throw new Error('Unexpected sign-in token.');
@@ -66,7 +55,7 @@ export async function initAuth({ clientId, buttonContainer, onSignIn }) {
         name: payload.name,
         email: payload.email,
         picture: payload.picture,
-        expiresAt: payload.exp * 1000, // JWT "exp" is in seconds; Date.now() is milliseconds
+        expiresAt: payload.exp * 1000, // exp is in seconds
       };
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(user));
       onSignIn(user);
@@ -82,7 +71,6 @@ export async function initAuth({ clientId, buttonContainer, onSignIn }) {
   });
 }
 
-/** Forget the user locally and stop Google from auto-selecting their account. */
 export function signOut() {
   sessionStorage.removeItem(STORAGE_KEY);
   window.google?.accounts?.id?.disableAutoSelect();

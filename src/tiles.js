@@ -1,17 +1,6 @@
-// Build the HTML element for one person tile (Image B).
-//
-//   ┌──────────────────┐
-//   │ MY            45 │  country · age
-//   │     [ photo ]    │
-//   │    Full Name     │
-//   │     Interest     │
-//   └──────────────────┘
-
-// Net worth thresholds from the brief:
-//   Red < $100K, Orange $100K–$200K (inclusive), Green > $200K
+// Red below 100K, orange from 100K to 200K inclusive, green above 200K.
 export const NET_WORTH_THRESHOLDS = { low: 100_000, high: 200_000 };
 
-/** Business rule → level name. CSS decides what each level looks like. */
 export function netWorthLevel(netWorth) {
   if (netWorth < NET_WORTH_THRESHOLDS.low) return 'low';
   if (netWorth > NET_WORTH_THRESHOLDS.high) return 'high';
@@ -32,7 +21,6 @@ function initials(name) {
     .join('');
 }
 
-/** Helper: create an element with a class and text (textContent = safe from HTML injection). */
 function el(tag, className, text) {
   const node = document.createElement(tag);
   node.className = className;
@@ -47,7 +35,7 @@ function createPhoto(person) {
   const img = el('img', 'tile-photo');
   img.src = person.photo;
   img.alt = person.name;
-  img.draggable = false; // otherwise dragging to rotate the scene "picks up" the image
+  img.draggable = false; // native image drag would interfere with rotating the scene
   img.addEventListener('error', () => img.replaceWith(fallback), { once: true });
   return img;
 }

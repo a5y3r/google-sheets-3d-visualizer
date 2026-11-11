@@ -1,9 +1,5 @@
-// Load people from Google Sheets via the Sheets API v4 (values.get).
-// Docs: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get
-
 const SHEETS_API_URL = 'https://sheets.googleapis.com/v4/spreadsheets';
 
-// Sheet header text → property name in our objects.
 const COLUMNS = {
   name: 'Name',
   photo: 'Photo',
@@ -13,14 +9,13 @@ const COLUMNS = {
   netWorth: 'Net Worth',
 };
 
-/** Fetch the raw cell values: an array of rows, each row an array of strings. */
 export async function fetchSheetRows({ sheetId, range, apiKey }) {
   const url =
     `${SHEETS_API_URL}/${encodeURIComponent(sheetId)}` +
     `/values/${encodeURIComponent(range)}?key=${encodeURIComponent(apiKey)}`;
 
   const response = await fetch(url);
-  const body = await response.json().catch(() => ({})); // error bodies may not be JSON
+  const body = await response.json().catch(() => ({}));
 
   if (!response.ok) {
     const reason = body.error?.message ?? response.statusText;
@@ -29,18 +24,17 @@ export async function fetchSheetRows({ sheetId, range, apiKey }) {
   return body.values ?? [];
 }
 
-/** "$251,260.80" → 251260.8  (strips everything except digits, dot and minus) */
+// e.g. "$251,260.80" becomes 251260.8
 export function parseMoney(text) {
   const value = Number(String(text ?? '').replace(/[^0-9.-]/g, ''));
   return Number.isFinite(value) ? value : 0;
 }
 
-/** Turn raw rows (first row = header) into clean person objects. */
 export function rowsToPeople(rows) {
   const [header = [], ...dataRows] = rows;
   const normalisedHeader = header.map((cell) => cell.trim().toLowerCase());
 
-  // Find each column's index by its header name, so column order doesn't matter.
+  // Columns are matched by header name, so their order in the sheet doesn't matter.
   const index = {};
   for (const [key, title] of Object.entries(COLUMNS)) {
     index[key] = normalisedHeader.indexOf(title.toLowerCase());
@@ -50,7 +44,7 @@ export function rowsToPeople(rows) {
   const cell = (row, key) => (row[index[key]] ?? '').trim();
 
   return dataRows
-    .filter((row) => cell(row, 'name') !== '') // skip blank rows
+    .filter((row) => cell(row, 'name') !== '')
     .map((row) => ({
       name: cell(row, 'name'),
       photo: cell(row, 'photo'),
@@ -61,7 +55,6 @@ export function rowsToPeople(rows) {
     }));
 }
 
-/** Convenience: fetch + parse in one call. */
 export async function loadPeople(options) {
   return rowsToPeople(await fetchSheetRows(options));
 }
